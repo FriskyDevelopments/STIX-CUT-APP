@@ -1363,7 +1363,7 @@ export default function App() {
               >
                 <div className="flex items-center justify-between mb-8">
                   <h2 className="text-2xl font-black uppercase tracking-tight">Forge Sticker</h2>
-                  <button onClick={() => setShowForgeModal(false)} className="p-2 rounded-full hover:bg-white/10">
+                  <button onClick={() => setShowForgeModal(false)} aria-label="Close" className="p-2 rounded-full hover:bg-white/10">
                     <AlertCircle className="w-6 h-6 rotate-45" />
                   </button>
                 </div>
