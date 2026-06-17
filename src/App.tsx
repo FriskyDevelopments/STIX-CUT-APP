@@ -332,11 +332,16 @@ export default function App() {
         setProcessingStatus(`Trimming: ${message}`);
       }
     });
-    await ffmpeg.load({
-      coreURL: await toBlobURL(`${baseURL}/ffmpeg-core.js`, "text/javascript"),
-      wasmURL: await toBlobURL(`${baseURL}/ffmpeg-core.wasm`, "application/wasm"),
-    });
-    ffmpegRef.current = ffmpeg;
+    try {
+      await ffmpeg.load({
+        coreURL: await toBlobURL(`${baseURL}/ffmpeg-core.js`, "text/javascript"),
+        wasmURL: await toBlobURL(`${baseURL}/ffmpeg-core.wasm`, "application/wasm"),
+      });
+      ffmpegRef.current = ffmpeg;
+    } catch (err) {
+      console.error('[STIX]', err);
+      throw err;
+    }
   };
 
   const trimVideo = async () => {
