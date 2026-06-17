@@ -101,6 +101,8 @@ export default function App() {
   const [proUsageCount, setProUsageCount] = useState(0);
   const [starsBalance, setStarsBalance] = useState(0);
   const [isUpgrading, setIsUpgrading] = useState(false);
+  const [isManagingSubscription, setIsManagingSubscription] = useState(false);
+  const [isUnlockingPro, setIsUnlockingPro] = useState(false);
   const [showUpsell, setShowUpsell] = useState(false);
   const [videoDuration, setVideoDuration] = useState(0);
   const [stripeCustomerId, setStripeCustomerId] = useState<string | null>(null);
@@ -274,6 +276,7 @@ export default function App() {
     }
 
     try {
+      setIsManagingSubscription(true);
       setProcessingStatus("Opening subscription portal...");
       const response = await fetch("/api/create-portal-session", {
         method: "POST",
@@ -290,6 +293,7 @@ export default function App() {
     } catch (err: any) {
       setError(err.message);
       setProcessingStatus("");
+      setIsManagingSubscription(false);
     }
   };
 
@@ -855,10 +859,15 @@ export default function App() {
                       whileHover={{ scale: 1.05 }}
                       whileTap={{ scale: 0.95 }}
                       onClick={handleManageSubscription}
-                      className="p-3 rounded-2xl glass-card border-white/10 hover:bg-white/10 transition-all flex items-center justify-center group"
-                      title="Manage Subscription"
+                      disabled={isManagingSubscription}
+                      className="p-3 rounded-2xl glass-card border-white/10 hover:bg-white/10 transition-all flex items-center justify-center group disabled:opacity-50 disabled:cursor-not-allowed"
+                      title={isManagingSubscription ? "Loading…" : "Manage Subscription"}
                     >
-                      <Settings className="w-5 h-5 text-gray-400 group-hover:text-white transition-colors" />
+                      {isManagingSubscription ? (
+                        <Loader2 className="w-5 h-5 text-gray-400 animate-spin" />
+                      ) : (
+                        <Settings className="w-5 h-5 text-gray-400 group-hover:text-white transition-colors" />
+                      )}
                     </motion.button>
                   </div>
                 )}
