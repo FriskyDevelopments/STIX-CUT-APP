@@ -124,7 +124,7 @@ export default function App() {
   // Initialize Gemini API
   const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
 
-  // Cleanup video URLs
+  // Initialize state
   useEffect(() => {
     // Load Pro status and usage from localStorage
     const savedPro = localStorage.getItem("stix_magic_pro") === "true";
@@ -155,12 +155,20 @@ export default function App() {
     
     setUsageCount(savedUsage);
     setProUsageCount(savedProUsage);
+  }, []);
 
+  // Cleanup video URLs
+  useEffect(() => {
     return () => {
       if (videoUrl) URL.revokeObjectURL(videoUrl);
+    };
+  }, [videoUrl]);
+
+  useEffect(() => {
+    return () => {
       if (trimmedVideoUrl) URL.revokeObjectURL(trimmedVideoUrl);
     };
-  }, [videoUrl, trimmedVideoUrl]);
+  }, [trimmedVideoUrl]);
 
   const handleUpgrade = async (type: "pro" | "stars" = "pro") => {
     // Grant access (Demo Mode)
@@ -239,6 +247,8 @@ export default function App() {
     navigator.clipboard.writeText(text).then(() => {
       setProcessingStatus(`Copied ${type} to clipboard!`);
       setTimeout(() => setProcessingStatus(""), 3000);
+    }).catch(err => {
+      console.error("Clipboard write error:", err);
     });
   };
 
@@ -252,6 +262,8 @@ export default function App() {
     navigator.clipboard.writeText(shareUrl.toString()).then(() => {
       setShowShareToast(true);
       setTimeout(() => setShowShareToast(false), 3000);
+    }).catch(err => {
+      console.error("Clipboard write error:", err);
     });
   };
 
