@@ -1328,8 +1328,8 @@ export default function App() {
                       You're currently on the free tier. Upgrade to Pro for high-capacity video analyses, 
                       high-speed trimming, and priority sticker forging.
                     </p>
-                    <button 
-                      onClick={handleUpgrade}
+                    <button
+                      onClick={() => handleUpgrade("pro")}
                       disabled={isUpgrading}
                       className="px-12 py-5 rounded-2xl bg-white text-black font-black text-lg hover:bg-yellow-500 transition-all hover:scale-105 flex items-center gap-3 mx-auto shadow-2xl"
                     >
