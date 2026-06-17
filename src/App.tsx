@@ -1068,12 +1068,20 @@ export default function App() {
                     <motion.button 
                       whileHover={{ scale: 1.02, y: -2 }}
                       whileTap={{ scale: 0.98 }}
-                      onClick={() => handleUpgrade("pro")}
-                      className="w-full py-6 rounded-3xl bg-gradient-to-r from-blue-600 to-purple-600 text-white font-black text-xl hover:from-blue-500 hover:to-purple-500 transition-all flex flex-col items-center justify-center gap-1 shadow-[0_20px_40px_rgba(37,99,235,0.3)]"
+                      onClick={async () => {
+                        setIsUnlockingPro(true);
+                        try {
+                          await handleUpgrade("pro");
+                        } finally {
+                          setIsUnlockingPro(false);
+                        }
+                      }}
+                      disabled={isUnlockingPro}
+                      className="w-full py-6 rounded-3xl bg-gradient-to-r from-blue-600 to-purple-600 text-white font-black text-xl hover:from-blue-500 hover:to-purple-500 transition-all flex flex-col items-center justify-center gap-1 shadow-[0_20px_40px_rgba(37,99,235,0.3)] disabled:opacity-50 disabled:cursor-not-allowed"
                     >
                       <div className="flex items-center gap-3">
                         <Sparkles className="w-7 h-7 text-yellow-400 fill-current" />
-                        UNLOCK PRO • 699 STARS
+                        {isUnlockingPro ? "Loading…" : "UNLOCK PRO • 699 STARS"}
                       </div>
                       <span className="text-[10px] uppercase tracking-[0.2em] opacity-80">Native Telegram Stars Payment</span>
                     </motion.button>
