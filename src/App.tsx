@@ -558,11 +558,15 @@ export default function App() {
       
       while (fileState === "PROCESSING") {
         await new Promise((resolve) => setTimeout(resolve, 5000));
-        const fileInfo = await ai.files.get({ name: fileName });
-        fileState = fileInfo.state;
-        
-        if (fileState === "FAILED") {
-          throw new Error("Video processing failed on Google's servers.");
+        try {
+          const fileInfo = await ai.files.get({ name: fileName });
+          fileState = fileInfo.state;
+
+          if (fileState === "FAILED") {
+            throw new Error("Video processing failed on Google's servers.");
+          }
+        } catch (pollError: any) {
+          throw new Error(`Failed to check video processing status: ${pollError.message}`);
         }
       }
 
@@ -804,6 +808,7 @@ export default function App() {
                     <span className="text-sm font-bold tracking-tight">{starsBalance} Stars</span>
                     <button 
                       onClick={() => setShowUpsell(true)}
+                      aria-label="Buy more Stars"
                       className="ml-2 w-7 h-7 rounded-xl bg-white/10 hover:bg-white/20 flex items-center justify-center transition-all"
                     >
                       <Upload className="w-3.5 h-3.5 rotate-45" />
