@@ -163,30 +163,36 @@ export default function App() {
   }, [videoUrl, trimmedVideoUrl]);
 
   const handleUpgrade = async (type: "pro" | "stars" = "pro") => {
-    // Grant access (Demo Mode)
-    if (type === "pro") {
-      // Simulate Telegram Stars Payment for Pro (699 Stars)
-      setProcessingStatus("Processing Telegram Stars Payment (699)...");
-      await new Promise(resolve => setTimeout(resolve, 2000));
-      
-      setIsPro(true);
-      const demoCustomerId = "cus_demo123"; 
-      setStripeCustomerId(demoCustomerId);
-      localStorage.setItem("stix_magic_pro", "true");
-      localStorage.setItem("stix_magic_customer_id", demoCustomerId);
-      setProcessingStatus("Clipsflow Pro Unlocked! ✦");
-    } else {
-      // Simulate buying 10 stars
-      setProcessingStatus("Processing Stars Purchase...");
-      await new Promise(resolve => setTimeout(resolve, 1500));
-      
-      const newStars = starsBalance + 10;
-      setStarsBalance(newStars);
-      localStorage.setItem("stix_magic_stars", newStars.toString());
-      setProcessingStatus("10 Stars Added! ✦");
+    try {
+      // Grant access (Demo Mode)
+      if (type === "pro") {
+        // Simulate Telegram Stars Payment for Pro (699 Stars)
+        setProcessingStatus("Processing Telegram Stars Payment (699)...");
+        await new Promise(resolve => setTimeout(resolve, 2000));
+        
+        setIsPro(true);
+        const demoCustomerId = "cus_demo123"; 
+        setStripeCustomerId(demoCustomerId);
+        localStorage.setItem("stix_magic_pro", "true");
+        localStorage.setItem("stix_magic_customer_id", demoCustomerId);
+        setProcessingStatus("Clipsflow Pro Unlocked! ✦");
+      } else {
+        // Simulate buying 10 stars
+        setProcessingStatus("Processing Stars Purchase...");
+        await new Promise(resolve => setTimeout(resolve, 1500));
+        
+        const newStars = starsBalance + 10;
+        setStarsBalance(newStars);
+        localStorage.setItem("stix_magic_stars", newStars.toString());
+        setProcessingStatus("10 Stars Added! ✦");
+      }
+      setShowUpsell(false);
+      setTimeout(() => setProcessingStatus(""), 3000);
+    } catch (err: any) {
+      console.error('[STIX]', err);
+      setError(err?.message || "Upgrade failed. Please try again.");
+      setProcessingStatus("");
     }
-    setShowUpsell(false);
-    setTimeout(() => setProcessingStatus(""), 3000);
   };
 
   const handleFileChange = (e: ChangeEvent<HTMLInputElement>) => {
