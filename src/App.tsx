@@ -324,19 +324,24 @@ export default function App() {
   }, [result, videoUrl]);
 
   const loadFFmpeg = async () => {
-    const baseURL = "https://unpkg.com/@ffmpeg/core@0.12.6/dist/esm";
-    const ffmpeg = new FFmpeg();
-    ffmpeg.on("log", ({ message }) => {
-      console.log(message);
-      if (message.includes("frame=")) {
-        setProcessingStatus(`Trimming: ${message}`);
-      }
-    });
-    await ffmpeg.load({
-      coreURL: await toBlobURL(`${baseURL}/ffmpeg-core.js`, "text/javascript"),
-      wasmURL: await toBlobURL(`${baseURL}/ffmpeg-core.wasm`, "application/wasm"),
-    });
-    ffmpegRef.current = ffmpeg;
+    try {
+      const baseURL = "https://unpkg.com/@ffmpeg/core@0.12.6/dist/esm";
+      const ffmpeg = new FFmpeg();
+      ffmpeg.on("log", ({ message }) => {
+        console.log(message);
+        if (message.includes("frame=")) {
+          setProcessingStatus(`Trimming: ${message}`);
+        }
+      });
+      await ffmpeg.load({
+        coreURL: await toBlobURL(`${baseURL}/ffmpeg-core.js`, "text/javascript"),
+        wasmURL: await toBlobURL(`${baseURL}/ffmpeg-core.wasm`, "application/wasm"),
+      });
+      ffmpegRef.current = ffmpeg;
+    } catch (err) {
+      console.error('[STIX]', err);
+      throw err;
+    }
   };
 
   const trimVideo = async () => {
